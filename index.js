@@ -1,6 +1,6 @@
 
 import { NativeModules } from 'react-native';
 
-const { RNReactNativeV5 } = NativeModules;
+const { V5Module } = NativeModules;
 
-export default RNReactNativeV5;
+export default V5Module;

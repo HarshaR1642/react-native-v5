@@ -1,13 +1,13 @@
 
-# react-native-react-native-v5
+# react-native-v5
 
 ## Getting started
 
-`$ npm install react-native-react-native-v5 --save`
+`$ npm install react-native-v5 --save`
 
 ### Mostly automatic installation
 
-`$ react-native link react-native-react-native-v5`
+`$ react-native link react-native-v5`
 
 ### Manual installation
 
@@ -15,24 +15,24 @@
 #### Android
 
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
-  - Add `import com.reactlibrary.RNReactNativeV5Package;` to the imports at the top of the file
-  - Add `new RNReactNativeV5Package()` to the list returned by the `getPackages()` method
+  - Add `import com.reactlibrary.V5Package;` to the imports at the top of the file
+  - Add `new V5Package()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
   	```
-  	include ':react-native-react-native-v5'
-  	project(':react-native-react-native-v5').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-react-native-v5/android')
+  	include ':react-native-v5'
+  	project(':react-native-v5').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-v5/android')
   	```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
   	```
-      compile project(':react-native-react-native-v5')
+      compile project(':react-native-v5')
   	```
 
 
 ## Usage
 ```javascript
-import RNReactNativeV5 from 'react-native-react-native-v5';
+import V5Module from 'react-native-v5';
 
 // TODO: What to do with the module?
-RNReactNativeV5;
+V5Module;
 ```
   
