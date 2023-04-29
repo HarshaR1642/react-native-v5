@@ -29,7 +29,7 @@ public class V5Module extends ReactContextBaseJavaModule {
 
     ReactContext reactContext;
     V5AidlInterface v5AidlInterface;
-    ServiceConnection serviceConnection;
+    final String TAG = "V5Module";
 
     public V5Module(@Nonnull ReactApplicationContext reactContext) {
         super(reactContext);
@@ -45,14 +45,15 @@ public class V5Module extends ReactContextBaseJavaModule {
 
     public void initService() {
         CountDownLatch latch = new CountDownLatch(1);
-        serviceConnection = new ServiceConnection() {
+        ServiceConnection serviceConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service) {
+                Log.i(TAG, "Service Is Connected");
                 v5AidlInterface = V5AidlInterface.Stub.asInterface(service);
                 latch.countDown();
             }
 
             public void onServiceDisconnected(ComponentName className) {
-                Log.e("KeylessRN", "Service has unexpectedly disconnected");
+                Log.i(TAG, "Service Is Disconnected");
                 v5AidlInterface = null;
             }
         };
@@ -80,6 +81,7 @@ public class V5Module extends ReactContextBaseJavaModule {
                 v5AidlInterface.login(bundle, new ResponseCallback.Stub() {
                     @Override
                     public void onResponse(LoginResponseModel response) {
+                        Log.i(TAG, "Received Response");
                         WritableMap map = new WritableNativeMap();
 
                         boolean success = response.isSuccess();
