@@ -18,6 +18,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
+import com.service.keylessrn.model.LoginResponseModel;
 
 import javax.annotation.Nonnull;
 
@@ -52,7 +53,7 @@ public class V5Module extends ReactContextBaseJavaModule {
         };
 
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName("com.service.keylessrn", "com.service.keylessrn.AidlService"));
+        intent.setComponent(new ComponentName("com.service.keylessrn", "com.service.keylessrn.SmartHomeService"));
         this.reactContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 

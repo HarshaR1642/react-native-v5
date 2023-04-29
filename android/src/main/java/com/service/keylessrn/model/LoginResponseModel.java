@@ -1,4 +1,4 @@
-package com.service.keylessrn;
+package com.service.keylessrn.model;
 
 import android.os.Build;
 import android.os.Parcel;
