@@ -20,6 +20,9 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.service.keylessrn.model.LoginResponseModel;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import javax.annotation.Nonnull;
 
 public class V5Module extends ReactContextBaseJavaModule {
@@ -41,9 +44,11 @@ public class V5Module extends ReactContextBaseJavaModule {
     }
 
     public void initService() {
+        CountDownLatch latch = new CountDownLatch(1);
         serviceConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service) {
                 v5AidlInterface = V5AidlInterface.Stub.asInterface(service);
+                latch.countDown();
             }
 
             public void onServiceDisconnected(ComponentName className) {
@@ -55,10 +60,18 @@ public class V5Module extends ReactContextBaseJavaModule {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.service.keylessrn", "com.service.keylessrn.SmartHomeService"));
         this.reactContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        try {
+            latch.await(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @ReactMethod
     public void login(String email, String password, final Promise promise) {
+        if (v5AidlInterface == null) {
+            initService();
+        }
         Bundle bundle = new Bundle();
         bundle.putString("email", email);
         bundle.putString("password", password);
@@ -85,9 +98,11 @@ public class V5Module extends ReactContextBaseJavaModule {
                         }
                     }
                 });
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                promise.reject("500", e.getMessage());
             }
+        } else {
+            promise.reject("500", "Unable to establish connection");
         }
     }
 }
