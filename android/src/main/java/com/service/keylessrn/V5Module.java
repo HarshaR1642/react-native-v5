@@ -58,29 +58,29 @@ public class V5Module extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void login(String email, String password, final Promise promise){
+    public void login(String email, String password, final Promise promise) {
         Bundle bundle = new Bundle();
         bundle.putString("email", email);
         bundle.putString("password", password);
-        if(v5AidlInterface != null){
+        if (v5AidlInterface != null) {
             try {
-                v5AidlInterface.login(bundle, new ResponseCallback.Stub(){
+                v5AidlInterface.login(bundle, new ResponseCallback.Stub() {
                     @Override
-                    public void onResponse(LoginResponseModel response){
+                    public void onResponse(LoginResponseModel response) {
                         WritableMap map = new WritableNativeMap();
 
                         boolean success = response.isSuccess();
                         map.putBoolean("success", response.isSuccess());
-                        if(success) {
+                        if (success) {
                             map.putString("access_token", response.getAccess_token());
                             map.putString("id_token", response.getId_token());
                             map.putString("refresh_token", response.getRefresh_token());
-                        }else{
+                        } else {
                             map.putString("message", response.getMessage());
                         }
-                        if(success) {
+                        if (success) {
                             promise.resolve(map);
-                        }else{
+                        } else {
                             promise.reject("200", response.getMessage(), map);
                         }
                     }
