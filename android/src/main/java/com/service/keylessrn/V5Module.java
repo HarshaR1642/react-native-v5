@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -28,8 +29,6 @@ public class V5Module extends ReactContextBaseJavaModule {
 
     ReactContext reactContext;
     V5AidlInterface v5AidlInterface;
-    final String TAG = "V5Module";
-
     public V5Module(@Nonnull ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
@@ -39,39 +38,40 @@ public class V5Module extends ReactContextBaseJavaModule {
     @NonNull
     @Override
     public String getName() {
-        return "V5Module";
+        return Constants.APP_NAME;
     }
 
     public void initService() {
+        if(v5AidlInterface != null){
+            return;
+        }
         CountDownLatch latch = new CountDownLatch(1);
         ServiceConnection serviceConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service) {
-                Log.i(TAG, "Service Is Connected");
+                Log.i(Constants.TAG, "Service Is Connected");
                 v5AidlInterface = V5AidlInterface.Stub.asInterface(service);
                 latch.countDown();
             }
 
             public void onServiceDisconnected(ComponentName className) {
-                Log.i(TAG, "Service Is Disconnected");
+                Log.i(Constants.TAG, "Service Is Disconnected");
                 v5AidlInterface = null;
             }
         };
 
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName("com.service.keylessrn", "com.service.keylessrn.SmartHomeService"));
+        intent.setComponent(new ComponentName(Constants.SERVICE_PACKAGE_NAME, Constants.SERVICE_CLASS_NAME));
         this.reactContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         try {
             latch.await(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
     @ReactMethod
     public void login(String email, String password, final Promise promise) {
-        if (v5AidlInterface == null) {
-            initService();
-        }
+        initService();
         Bundle bundle = new Bundle();
         bundle.putString("email", email);
         bundle.putString("password", password);
@@ -80,7 +80,7 @@ public class V5Module extends ReactContextBaseJavaModule {
                 v5AidlInterface.login(bundle, new ResponseCallback.Stub() {
                     @Override
                     public void onResponse(LoginResponseModel response) {
-                        Log.i(TAG, "Received Response");
+                        Log.i(Constants.TAG, "Received Response");
                         WritableMap map = new WritableNativeMap();
 
                         boolean success = response.isSuccess();
@@ -104,6 +104,30 @@ public class V5Module extends ReactContextBaseJavaModule {
             }
         } else {
             promise.reject("500", "Unable to establish connection");
+        }
+    }
+
+    @ReactMethod
+    public void enableLockMode(){
+        initService();
+        if(v5AidlInterface != null) {
+            try {
+                v5AidlInterface.enableLockMode();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @ReactMethod
+    public void disableLockMode(){
+        initService();
+        if(v5AidlInterface != null) {
+            try {
+                v5AidlInterface.disableLockMode();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
