@@ -4,7 +4,7 @@ public final class Constants {
 
     public static final String APP_NAME = "V5Module";
     public static final String TAG = "V5Module";
-    public static final String SERVICE_PACKAGE_NAME = "com.service.keylessrn";
-    public static final String SERVICE_CLASS_NAME = "com.service.keylessrn.service.ClientService";
+    public static final String SERVICE_PACKAGE = "com.service.keylessrn";
+    public static final String SERVICE_CLASS = "com.service.keylessrn.service.ClientService";
 
 }
