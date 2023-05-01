@@ -60,7 +60,7 @@ public class V5Module extends ReactContextBaseJavaModule {
         };
 
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName(Constants.SERVICE_PACKAGE, Constants.SERVICE_CLASS));
+        intent.setComponent(new ComponentName(Constants.SERVICE_APP_PACKAGE, Constants.SERVICE_APP_CLASS));
         this.reactContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         try {
             latch.await(5, TimeUnit.SECONDS);
