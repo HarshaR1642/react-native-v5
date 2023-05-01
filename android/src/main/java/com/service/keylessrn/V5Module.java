@@ -106,28 +106,4 @@ public class V5Module extends ReactContextBaseJavaModule {
             promise.reject("500", "Unable to establish connection");
         }
     }
-
-    @ReactMethod
-    public void enableLockMode(){
-        initService();
-        if(v5AidlInterface != null) {
-            try {
-                v5AidlInterface.enableLockMode();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @ReactMethod
-    public void disableLockMode(){
-        initService();
-        if(v5AidlInterface != null) {
-            try {
-                v5AidlInterface.disableLockMode();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }
